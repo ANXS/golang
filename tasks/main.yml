@@ -1,0 +1,37 @@
+---
+- name: "Installing on Darwin"
+  set_fact:
+    golang_url: "{{golang_baseurl}}/go{{golang_version}}.darwin-amd64.tar.gz"
+    golang_sha: "{{golang_checksum.darwin}}"
+  when: ansible_os_family == 'Darwin' and ansible_machine == 'x86_64'
+- name: "Ensure cache directory exists"
+  file:
+    path: "{{golang_cache_path}}"
+    state: directory
+- name: "Download Golang"
+  get_url:
+    url: "{{golang_url}}"
+    dest: "{{golang_download_path}}"
+    checksum: "{{golang_sha}}"
+    owner: "{{golang_user}}"
+    group: "{{golang_group}}"
+    mode: 0660
+- name: "Ensure directory exists"
+  file:
+    path: "{{golang_path}}"
+    state: directory
+    owner: "{{golang_user}}"
+    group: "{{golang_group}}"
+    mode: 0770
+- name: "Extract Golang"
+  unarchive:
+    src: "{{golang_download_path}}"
+    dest: "{{golang_path}}"
+    copy: no
+- name: "Create profile snippet"
+  template:
+    src: "golang-profile.j2"
+    dest: "{{golang_profile_path}}/{{golang_profile_file}}"
+    owner: "{{golang_user}}"
+    mode: "0660"
+  when: golang_profile
