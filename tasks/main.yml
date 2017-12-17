@@ -4,6 +4,11 @@
     golang_url: "{{golang_baseurl}}/go{{golang_version}}.darwin-amd64.tar.gz"
     golang_sha: "{{golang_checksum.darwin}}"
   when: ansible_os_family == 'Darwin' and ansible_machine == 'x86_64'
+- name: "Installing on Linux"
+  set_fact:
+    golang_url: "{{golang_baseurl}}/go{{golang_version}}.linux-amd64.tar.gz"
+    golang_sha: "{{golang_checksum.linux}}"
+  when: ansible_os_family == 'Debian' and ansible_machine == 'x86_64'
 - name: "Ensure cache directory exists"
   file:
     path: "{{golang_cache_path}}"
@@ -28,6 +33,7 @@
     src: "{{golang_download_path}}"
     dest: "{{golang_path}}"
     copy: no
+    creates: "{{golang_path}}/go/bin/go"
 - name: "Create profile snippet"
   template:
     src: "golang-profile.j2"
