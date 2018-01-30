@@ -23,7 +23,7 @@
     mode: 0660
 - name: "Ensure directory exists"
   file:
-    path: "{{golang_path}}"
+    path: "{{golang_base_path}}"
     state: directory
     owner: "{{golang_user}}"
     group: "{{golang_group}}"
@@ -31,9 +31,9 @@
 - name: "Extract Golang"
   unarchive:
     src: "{{golang_download_path}}"
-    dest: "{{golang_path}}"
+    dest: "{{golang_base_path}}"
     copy: no
-    creates: "{{golang_path}}/go/bin/go"
+    creates: "{{golang_base_path}}/go/bin/go"
 - name: "Create profile snippet"
   template:
     src: "golang-profile.j2"
