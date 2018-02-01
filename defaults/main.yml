@@ -1,6 +1,5 @@
 ---
 golang_version: "1.9.2"
-golang_checksum: 
 golang_base_path: "/opt"
 golang_cache_path: "/var/anxs/golang"
 golang_profile: true
