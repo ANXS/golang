@@ -1,4 +1,6 @@
 # -*-Shell-script-*-
 GOPATH="{{golang_base_path}}/go"
 export GOPATH
-PATH="${PATH}:${GOPATH}/bin"
+if ! grep -q "${GOPATH}/bin" <<< "$PATH" ; then
+    PATH="${PATH}:${GOPATH}/bin"
+fi
