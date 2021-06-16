@@ -4,15 +4,21 @@
     golang_url: "{{golang_baseurl}}/go{{golang_version}}.darwin-amd64.tar.gz"
     golang_sha: "{{golang_checksum.darwin}}"
   when: ansible_os_family == 'Darwin' and ansible_machine == 'x86_64'
+
 - name: "Installing on Linux"
   set_fact:
     golang_url: "{{golang_baseurl}}/go{{golang_version}}.linux-amd64.tar.gz"
     golang_sha: "{{golang_checksum.linux}}"
   when: ansible_os_family == 'Debian' and ansible_machine == 'x86_64'
+
 - name: "Ensure cache directory exists"
   file:
     path: "{{golang_cache_path}}"
-    state: directory
+    state: "directory"
+    owner: "{{golang_user}}"
+    group: "{{golang_group}}"
+    mode: "{{golang_directory_mode}}"
+
 - name: "Download Golang"
   get_url:
     url: "{{golang_url}}"
@@ -20,24 +26,31 @@
     checksum: "{{golang_sha}}"
     owner: "{{golang_user}}"
     group: "{{golang_group}}"
-    mode: 0660
+    mode: "{{golang_file_mode}}"
+
 - name: "Ensure directory exists"
   file:
     path: "{{golang_base_path}}"
-    state: directory
+    state: "directory"
     owner: "{{golang_user}}"
     group: "{{golang_group}}"
-    mode: 0770
+    mode: "{{golang_directory_mode}}"
+
 - name: "Extract Golang"
   unarchive:
     src: "{{golang_download_path}}"
     dest: "{{golang_base_path}}"
-    copy: no
+    copy: false
     creates: "{{golang_base_path}}/go/bin/go"
+    owner: "{{golang_user}}"
+    group: "{{golang_group}}"
+    mode: "{{golang_directory_mode}}"
+
 - name: "Create profile snippet"
   template:
     src: "golang-profile.j2"
     dest: "{{golang_profile_path}}/{{golang_profile_file}}"
     owner: "{{golang_user}}"
-    mode: "0660"
+    group: "{{golang_group}}"
+    mode: "{{golang_file_mode}}"
   when: golang_profile
