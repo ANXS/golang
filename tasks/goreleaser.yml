@@ -1,0 +1,36 @@
+---
+- name: "Check if goreleaser version is already installed"
+  ansible.builtin.command:
+    cmd: "cat {{ golang_goreleaser_cache_version }}"
+  register: current_goreleaser_version
+  ignore_errors: true
+  changed_when: >
+    current_goreleaser_version.rc != 0
+    or current_goreleaser_version.stdout != golang_goreleaser_version
+
+- name: "Download goreleaser"
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ golang_goreleaser_url }}"
+    dest: "{{ golang_goreleaser_download_path }}"
+    mode: "0644"
+    force: "{{ current_goreleaser_version.changed }}"
+  when: current_goreleaser_version.changed
+
+- name: "Install goreleaser"
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ golang_goreleaser_download_path }}"
+    dest: "{{ golang_goreleaser_path }}"
+    remote_src: true
+    include:
+      - "goreleaser"
+    mode: "0755"
+  when: current_goreleaser_version.changed
+
+- name: "Persist current goreleaser version"
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ golang_goreleaser_cache_version }}"
+    content: "{{ golang_goreleaser_version }}"
+    mode: "0644"

@@ -1,3 +1,11 @@
 ---
-golang_baseurl: "https://redirector.gvt1.com/edgedl/go"
+golang_baseurl: "https://go.dev/dl"
 golang_download_path: "{{golang_cache_path}}/go-{{golang_version}}.tgz"
+
+# goreleaser download URL
+# goreleaser ships tarballs per platform: goreleaser_Linux_x86_64.tar.gz, goreleaser_Linux_arm64.tar.gz, etc.
+golang_goreleaser_arch: "{{ 'arm64' if ansible_facts['machine'] == 'aarch64' else 'x86_64' }}"
+golang_goreleaser_os: "{{ 'Darwin' if ansible_facts['os_family'] == 'Darwin' else 'Linux' }}"
+golang_goreleaser_url: "https://github.com/goreleaser/goreleaser/releases/download/v{{ golang_goreleaser_version }}/goreleaser_{{ golang_goreleaser_os }}_{{ golang_goreleaser_arch }}.tar.gz"
+golang_goreleaser_download_path: "{{ golang_cache_path }}/goreleaser-{{ golang_goreleaser_version }}.tar.gz"
+golang_goreleaser_cache_version: "{{ golang_cache_path }}/{{ golang_goreleaser_cache_file }}"

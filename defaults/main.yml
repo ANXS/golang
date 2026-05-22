@@ -10,4 +10,11 @@ golang_group: "root"
 golang_checksum:
   darwin: "sha256:73fd5840d55f5566d8db6c0ffdd187577e8ebe650c783f68bd27cbf95bde6743"
   linux: "sha256:de874549d9a8d8d8062be05808509c09a88a248e77ec14eb77453530829ac02b"
+golang_directory_mode: "0755"
+golang_file_mode: "0664"
 
+# goreleaser build tool
+golang_goreleaser: true
+golang_goreleaser_version: "2.8.2"
+golang_goreleaser_cache_file: "anxs-goreleaser-version"
+golang_goreleaser_path: "/usr/local/bin"
